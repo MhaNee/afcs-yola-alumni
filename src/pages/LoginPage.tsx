@@ -1,24 +1,70 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { GraduationCap, Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
+import { motion } from "framer-motion";
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleGoogleSignIn = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      toast({
+        title: "Welcome back!",
+        description: "Successfully signed in with Google.",
+      });
+      navigate("/");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error signing in",
+        description: error.message,
+      });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic
+    setLoading(true);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      toast({
+        title: "Welcome back!",
+        description: "Successfully signed in.",
+      });
+      navigate("/");
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error signing in",
+        description: error.message,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex">
       {/* Left Panel - Form */}
-      <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex-1 flex items-center justify-center p-6 lg:p-12"
+      >
         <div className="w-full max-w-md">
           <Link to="/" className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 rounded-xl bg-gradient-hero flex items-center justify-center">
@@ -78,9 +124,9 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <Button variant="navy" size="lg" className="w-full">
-              Sign In
-              <ArrowRight className="w-5 h-5 ml-2" />
+            <Button variant="navy" size="lg" className="w-full" disabled={loading}>
+              {loading ? "Signing in..." : "Sign In"}
+              {!loading && <ArrowRight className="w-5 h-5 ml-2" />}
             </Button>
           </form>
 
@@ -90,7 +136,7 @@ export default function LoginPage() {
             <div className="flex-1 border-t border-border" />
           </div>
 
-          <Button variant="outline" size="lg" className="w-full">
+          <Button variant="outline" size="lg" className="w-full" onClick={handleGoogleSignIn} type="button">
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
@@ -119,10 +165,15 @@ export default function LoginPage() {
             </Link>
           </p>
         </div>
-      </div>
+      </motion.div>
 
       {/* Right Panel - Visual */}
-      <div className="hidden lg:flex flex-1 bg-gradient-hero items-center justify-center p-12">
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="hidden lg:flex flex-1 bg-gradient-hero items-center justify-center p-12"
+      >
         <div className="max-w-md text-center">
           <div className="w-24 h-24 mx-auto mb-8 rounded-2xl bg-gold/20 flex items-center justify-center">
             <GraduationCap className="w-14 h-14 text-gold" />
@@ -131,11 +182,11 @@ export default function LoginPage() {
             Stay Connected
           </h2>
           <p className="text-primary-foreground/80 text-lg">
-            Join thousands of AFCS Yola alumni who are reconnecting, networking, 
+            Join thousands of AFCS Yola alumni who are reconnecting, networking,
             and making an impact together.
           </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
