@@ -12,6 +12,11 @@ const badgeVariants = cva(
         secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
         destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
         outline: "text-foreground",
+        // Custom AFCS YOLA Variants
+        gold: "border-transparent bg-gold text-navy-deep",
+        navy: "border-transparent bg-navy-deep text-primary-foreground",
+        sky: "border-transparent bg-sky-bright text-secondary-foreground",
+        success: "border-transparent bg-success text-success-foreground",
       },
     },
     defaultVariants: {
