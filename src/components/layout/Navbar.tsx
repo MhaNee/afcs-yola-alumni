@@ -19,11 +19,23 @@ const protectedLinks = [
 ];
 
 export function Navbar() {
-  const { user } = useAuth();
+  const { user, userData } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
 
-  const allLinks = [...navLinks, ...(user ? protectedLinks : [])];
+  const allLinks = [...navLinks];
+  if (user && userData?.isProfileComplete) {
+    allLinks.push(...protectedLinks);
+  } else if (user && !userData?.isProfileComplete) {
+    // If logged in but profile incomplete, maybe allow access only to simple things or just Profile
+    // Actually, if they are on profile page, they see "Home", but can't navigate elsewhere easily.
+    // We might want to show "Profile" explicitly so they don't get lost, or nothing else.
+    // The user request was "dont show navigation till users complete their profile".
+    // So we will NOT add protectedLinks.
+
+    // Optionally add a link to Profile if they navigate away? 
+    // But they should be redirected there by ProtectedRoutes anyway.
+  }
 
   const isActive = (path: string) => location.pathname === path;
 

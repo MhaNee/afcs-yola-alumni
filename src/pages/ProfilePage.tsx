@@ -7,8 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/contexts/AuthContext";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 import { useToast } from "@/hooks/use-toast";
 import {
     User, MapPin, GraduationCap, Loader2, Mail,
@@ -106,14 +106,11 @@ export default function ProfilePage() {
         setSaving(true);
 
         try {
-            // Create a reference to the storage location
-            const storageRef = ref(storage, `profile-images/${user.uid}/${file.name}`);
+            // Upload to Cloudinary
+            const result = await uploadToCloudinary(file, `profile-images/${user.uid}`);
 
-            // Upload the file
-            await uploadBytes(storageRef, file);
-
-            // Get the download URL
-            const url = await getDownloadURL(storageRef);
+            // Get the secure URL from Cloudinary
+            const url = result.secure_url;
 
             // Update local state
             setPreviewImage(url);
@@ -129,7 +126,7 @@ export default function ProfilePage() {
             toast({
                 variant: "destructive",
                 title: "Upload Failed",
-                description: "Could not upload profile image. Please try again.",
+                description: error instanceof Error ? error.message : "Could not upload profile image. Please try again.",
             });
         } finally {
             setSaving(false);
@@ -236,6 +233,7 @@ export default function ProfilePage() {
                                     value={formData.fullName}
                                     onChange={handleChange}
                                     placeholder="Your Name"
+                                    required
                                 />
                             </div>
 
@@ -283,6 +281,7 @@ export default function ProfilePage() {
                                         onChange={handleChange}
                                         className="pl-9"
                                         placeholder="+234..."
+                                        required
                                     />
                                 </div>
                             </div>
@@ -310,6 +309,7 @@ export default function ProfilePage() {
                                     onChange={handleChange}
                                     className="pl-9"
                                     placeholder="City, Country"
+                                    required
                                 />
                             </div>
                         </div>
@@ -333,6 +333,7 @@ export default function ProfilePage() {
                                         onChange={handleChange}
                                         className="pl-9"
                                         placeholder="YYYY"
+                                        required
                                     />
                                 </div>
                             </div>
