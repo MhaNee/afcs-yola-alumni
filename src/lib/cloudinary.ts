@@ -20,12 +20,12 @@ export interface CloudinaryUploadResponse {
 /**
  * Upload an image file to Cloudinary
  * @param file - The image file to upload
- * @param folder - Optional folder name in Cloudinary (default: 'profile-images')
+ * @param folder - Optional folder name in Cloudinary (default: 'afcs/alumni/profiles')
  * @returns Promise with the Cloudinary response containing the secure_url
  */
 export const uploadToCloudinary = async (
     file: File,
-    folder: string = 'profile-images'
+    folder: string = 'afcs/alumni/profiles'
 ): Promise<CloudinaryUploadResponse> => {
     const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
     const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;

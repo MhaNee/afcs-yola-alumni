@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { GraduationCap, Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
+import { doc, getDoc } from "firebase/firestore";
 import { useToast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
@@ -17,15 +18,35 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const checkProfileAndNavigate = async (userId: string) => {
+    try {
+      const userDoc = await getDoc(doc(db, "users", userId));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        if (!userData.isProfileComplete) {
+          toast({
+            title: "Profile Incomplete",
+            description: "Please complete your profile to get the most out of the platform.",
+            variant: "default",
+          });
+        }
+      }
+      navigate("/profile");
+    } catch (error) {
+      console.error("Error checking profile:", error);
+      navigate("/profile");
+    }
+  };
+
   const handleGoogleSignIn = async () => {
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
       toast({
         title: "Welcome back!",
         description: "Successfully signed in with Google.",
       });
-      navigate("/");
+      await checkProfileAndNavigate(result.user.uid);
     } catch (error: unknown) {
       toast({
         variant: "destructive",
@@ -39,12 +60,12 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const result = await signInWithEmailAndPassword(auth, email, password);
       toast({
         title: "Welcome back!",
         description: "Successfully signed in.",
       });
-      navigate("/");
+      await checkProfileAndNavigate(result.user.uid);
     } catch (error: unknown) {
       toast({
         variant: "destructive",

@@ -107,7 +107,7 @@ export default function ProfilePage() {
 
         try {
             // Upload to Cloudinary
-            const result = await uploadToCloudinary(file, `profile-images/${user.uid}`);
+            const result = await uploadToCloudinary(file, `afcs/alumni/profiles/${user.uid}`);
 
             // Get the secure URL from Cloudinary
             const url = result.secure_url;
