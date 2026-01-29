@@ -33,6 +33,7 @@ export default function RegisterPage() {
     email: "",
     password: "",
     graduationYear: "",
+    adminCode: "",
   });
 
   const handleGoogleSignIn = async () => {
@@ -52,7 +53,7 @@ export default function RegisterPage() {
         title: "Welcome!",
         description: "Successfully signed in with Google.",
       });
-      navigate("/");
+      navigate("/profile");
     } catch (error: unknown) {
       toast({
         variant: "destructive",
@@ -65,6 +66,10 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    // Check admin code
+    const role = formData.adminCode === "AFCS2025" ? "admin" : "alumni";
+
     try {
       const { user } = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
       await updateProfile(user, {
@@ -74,7 +79,7 @@ export default function RegisterPage() {
         fullName: formData.fullName,
         email: formData.email,
         graduationYear: formData.graduationYear,
-        role: "alumni",
+        role: role,
         createdAt: new Date().toISOString(),
       });
 
@@ -82,7 +87,7 @@ export default function RegisterPage() {
         title: "Account created!",
         description: "Welcome to the AFCS Yola Alumni community.",
       });
-      navigate("/");
+      navigate("/profile");
     } catch (error: unknown) {
       toast({
         variant: "destructive",
@@ -225,6 +230,22 @@ export default function RegisterPage() {
               <p className="text-xs text-muted-foreground">
                 Must be at least 8 characters with a number and symbol.
               </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="adminCode">Admin Code (Optional)</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  id="adminCode"
+                  type="password"
+                  placeholder="Enter admin code"
+                  value={formData.adminCode}
+                  onChange={(e) => setFormData({ ...formData, adminCode: e.target.value })}
+                  className="pl-10 h-12"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">Admin use only.</p>
             </div>
 
             <Button variant="navy" size="lg" className="w-full" disabled={loading}>

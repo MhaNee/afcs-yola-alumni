@@ -8,14 +8,14 @@ import { auth } from "@/lib/firebase";
 
 const navLinks = [
   { name: "Home", path: "/" },
-  { name: "About", path: "/about" },
 ];
 
 const protectedLinks = [
   { name: "Directory", path: "/directory" },
   { name: "Events", path: "/events" },
   { name: "Jobs", path: "/jobs" },
-  { name: "Network", path: "/network" },
+  { name: "Chat", path: "/chat" },
+  { name: "Profile", path: "/profile" },
 ];
 
 export function Navbar() {
@@ -51,8 +51,8 @@ export function Navbar() {
                 key={link.name}
                 to={link.path}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${isActive(link.path)
-                    ? "bg-primary text-primary-foreground"
-                    : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-foreground/70 hover:text-foreground hover:bg-muted"
                   }`}
               >
                 {link.name}
@@ -108,8 +108,8 @@ export function Navbar() {
                   to={link.path}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${isActive(link.path)
-                      ? "bg-primary text-primary-foreground"
-                      : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                    ? "bg-primary text-primary-foreground"
+                    : "text-foreground/70 hover:text-foreground hover:bg-muted"
                     }`}
                 >
                   {link.name}

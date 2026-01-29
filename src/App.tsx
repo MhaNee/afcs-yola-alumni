@@ -7,8 +7,9 @@ import Index from "./pages/Index";
 import DirectoryPage from "./pages/DirectoryPage";
 import EventsPage from "./pages/EventsPage";
 import JobsPage from "./pages/JobsPage";
-import NetworkPage from "./pages/NetworkPage";
-import AboutPage from "./pages/AboutPage";
+import ChatPage from "./pages/ChatPage";
+import ProfilePage from "./pages/ProfilePage";
+import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import NotFound from "./pages/NotFound";
@@ -25,12 +26,12 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<HomeWrapper />} />
             <Route path="/directory" element={<ProtectedRoute><DirectoryPage /></ProtectedRoute>} />
             <Route path="/events" element={<ProtectedRoute><EventsPage /></ProtectedRoute>} />
             <Route path="/jobs" element={<ProtectedRoute><JobsPage /></ProtectedRoute>} />
-            <Route path="/network" element={<ProtectedRoute><NetworkPage /></ProtectedRoute>} />
-            <Route path="/about" element={<AboutPage />} />
+            <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
@@ -41,5 +42,12 @@ const App = () => (
     </AuthProvider>
   </QueryClientProvider>
 );
+
+import { useAuth } from "./contexts/AuthContext";
+
+const HomeWrapper = () => {
+  const { user } = useAuth();
+  return user ? <DashboardPage /> : <Index />;
+};
 
 export default App;
