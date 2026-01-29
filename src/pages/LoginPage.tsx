@@ -26,11 +26,11 @@ export default function LoginPage() {
         description: "Successfully signed in with Google.",
       });
       navigate("/");
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         variant: "destructive",
         title: "Error signing in",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unknown error occurred",
       });
     }
   };
@@ -45,11 +45,11 @@ export default function LoginPage() {
         description: "Successfully signed in.",
       });
       navigate("/");
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         variant: "destructive",
         title: "Error signing in",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unknown error occurred",
       });
     } finally {
       setLoading(false);

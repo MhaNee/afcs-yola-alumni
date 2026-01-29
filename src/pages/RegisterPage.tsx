@@ -53,11 +53,11 @@ export default function RegisterPage() {
         description: "Successfully signed in with Google.",
       });
       navigate("/");
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         variant: "destructive",
         title: "Error signing in",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unknown error occurred",
       });
     }
   };
@@ -83,11 +83,11 @@ export default function RegisterPage() {
         description: "Welcome to the AFCS Yola Alumni community.",
       });
       navigate("/");
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         variant: "destructive",
         title: "Error creating account",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unknown error occurred",
       });
     } finally {
       setLoading(false);
