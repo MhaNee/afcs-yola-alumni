@@ -6,12 +6,11 @@ import { Menu, X, GraduationCap, User } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { auth } from "@/lib/firebase";
 
-const navLinks = [
-  { name: "Home", path: "/" },
+const navLinks: { name: string; path: string }[] = [
+  // Home link removed - users navigate via logo
 ];
 
 const protectedLinks = [
-  { name: "Dashboard", path: "/dashboard" },
   { name: "Directory", path: "/directory" },
   { name: "Events", path: "/events" },
   { name: "Jobs", path: "/jobs" },
@@ -26,7 +25,15 @@ export function Navbar() {
 
   const allLinks = [...navLinks];
   if (user) {
-    // Show all navigation links for authenticated users
+    // Only show Dashboard/Admin link for admin users
+    const isAdmin = userData?.role === "admin";
+    if (isAdmin) {
+      allLinks.push({
+        name: "Admin",
+        path: "/dashboard"
+      });
+    }
+    // Show all other navigation links for authenticated users
     allLinks.push(...protectedLinks);
   }
 
