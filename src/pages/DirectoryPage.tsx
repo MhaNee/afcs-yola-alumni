@@ -62,10 +62,10 @@ export default function DirectoryPage() {
             name: data.fullName || "Anonymous",
             class: data.graduationYear || "N/A",
             location: data.location || "Location not set",
-            industry: data.industry || "Industry not set",
-            role: data.roleDescription || "Member", // Using roleDescription if role is used for access control
+            industry: data.course || "Course not set",
+            role: data.positionHeld || "Member",
             image: data.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.fullName || "User")}&background=random`,
-            linkedin: data.linkedin || "#",
+            linkedin: data.email || "#",
           });
         });
 

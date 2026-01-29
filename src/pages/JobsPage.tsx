@@ -3,8 +3,8 @@ import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { 
-  Search, Briefcase, MapPin, Clock, Building2, 
+import {
+  Search, Briefcase, MapPin, Clock, Building2,
   DollarSign, ExternalLink, Plus, Filter, Bookmark
 } from "lucide-react";
 import {
@@ -16,78 +16,7 @@ import {
 } from "@/components/ui/select";
 
 // Mock jobs data
-const jobsData = [
-  {
-    id: 1,
-    title: "Senior Software Engineer",
-    company: "Google Nigeria",
-    location: "Lagos, Nigeria",
-    type: "Full-time",
-    salary: "₦15M - ₦25M/year",
-    posted: "2 days ago",
-    postedBy: "Aisha Bello",
-    postedByClass: "2010",
-    description: "Join our engineering team to build innovative solutions for African markets.",
-    skills: ["Python", "React", "Cloud"],
-    logo: "https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?w=100&h=100&fit=crop",
-  },
-  {
-    id: 2,
-    title: "Investment Banking Analyst",
-    company: "GTBank",
-    location: "Lagos, Nigeria",
-    type: "Full-time",
-    salary: "₦8M - ₦12M/year",
-    posted: "1 week ago",
-    postedBy: "Mohammed Yusuf",
-    postedByClass: "2005",
-    description: "Exciting opportunity in our investment banking division for analytical minds.",
-    skills: ["Finance", "Excel", "Analysis"],
-    logo: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=100&h=100&fit=crop",
-  },
-  {
-    id: 3,
-    title: "Medical Doctor - General Practice",
-    company: "St. Nicholas Hospital",
-    location: "Abuja, Nigeria",
-    type: "Full-time",
-    salary: "₦10M - ₦15M/year",
-    posted: "3 days ago",
-    postedBy: "Fatima Abdullahi",
-    postedByClass: "2015",
-    description: "Looking for a skilled GP to join our expanding healthcare team.",
-    skills: ["Medicine", "Patient Care", "Diagnosis"],
-    logo: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=100&h=100&fit=crop",
-  },
-  {
-    id: 4,
-    title: "Legal Counsel - Corporate",
-    company: "Aluko & Oyebode",
-    location: "Lagos, Nigeria",
-    type: "Full-time",
-    salary: "₦12M - ₦18M/year",
-    posted: "5 days ago",
-    postedBy: "Grace Okonkwo",
-    postedByClass: "2012",
-    description: "Join Nigeria's leading law firm as a corporate legal counsel.",
-    skills: ["Corporate Law", "M&A", "Contracts"],
-    logo: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=100&h=100&fit=crop",
-  },
-  {
-    id: 5,
-    title: "Aviation Safety Officer",
-    company: "Nigerian Civil Aviation Authority",
-    location: "Abuja, Nigeria",
-    type: "Full-time",
-    salary: "₦7M - ₦10M/year",
-    posted: "1 week ago",
-    postedBy: "Ibrahim Hassan",
-    postedByClass: "1998",
-    description: "Ensure aviation safety standards across Nigerian airspace.",
-    skills: ["Aviation", "Safety", "Regulations"],
-    logo: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=100&h=100&fit=crop",
-  },
-];
+const jobsData = [];
 
 const jobTypes = ["All Types", "Full-time", "Part-time", "Contract", "Remote", "Internship"];
 const industries = ["All Industries", "Technology", "Finance", "Healthcare", "Legal", "Aviation", "Education"];
@@ -108,7 +37,7 @@ export default function JobsPage() {
               Alumni Job Board
             </h1>
             <p className="text-lg text-primary-foreground/80 max-w-2xl mx-auto mb-8">
-              Exclusive job opportunities posted by and for AFCS Yola alumni. 
+              Exclusive job opportunities posted by and for AFCS Yola alumni.
               Find your next career move within our trusted network.
             </p>
             <Button variant="hero" size="lg">
@@ -177,78 +106,85 @@ export default function JobsPage() {
             </div>
 
             <div className="space-y-4">
-              {jobsData.map((job) => (
-                <div 
-                  key={job.id}
-                  className="group bg-card rounded-2xl p-6 shadow-card hover:shadow-card-hover transition-all duration-300 border border-transparent hover:border-primary/20"
-                >
-                  <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-                    {/* Company Logo */}
-                    <img 
-                      src={job.logo}
-                      alt={job.company}
-                      className="w-14 h-14 rounded-xl object-cover flex-shrink-0"
-                    />
+              {jobsData.length > 0 ? (
+                jobsData.map((job) => (
+                  <div
+                    key={job.id}
+                    className="group bg-card rounded-2xl p-6 shadow-card hover:shadow-card-hover transition-all duration-300 border border-transparent hover:border-primary/20"
+                  >
+                    <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+                      {/* Company Logo */}
+                      <img
+                        src={job.logo}
+                        alt={job.company}
+                        className="w-14 h-14 rounded-xl object-cover flex-shrink-0"
+                      />
 
-                    {/* Job Info */}
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <h3 className="text-xl font-semibold text-navy-deep group-hover:text-primary transition-colors">
-                            {job.title}
-                          </h3>
-                          <p className="text-muted-foreground">{job.company}</p>
+                      {/* Job Info */}
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <h3 className="text-xl font-semibold text-navy-deep group-hover:text-primary transition-colors">
+                              {job.title}
+                            </h3>
+                            <p className="text-muted-foreground">{job.company}</p>
+                          </div>
+                          <Button variant="ghost" size="icon" className="flex-shrink-0">
+                            <Bookmark className="w-5 h-5" />
+                          </Button>
                         </div>
-                        <Button variant="ghost" size="icon" className="flex-shrink-0">
-                          <Bookmark className="w-5 h-5" />
+
+                        <p className="text-sm text-muted-foreground mt-2 line-clamp-1">
+                          {job.description}
+                        </p>
+
+                        <div className="flex flex-wrap items-center gap-4 mt-4 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-4 h-4" />
+                            <span>{job.location}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Briefcase className="w-4 h-4" />
+                            <span>{job.type}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <DollarSign className="w-4 h-4" />
+                            <span>{job.salary}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            <span>{job.posted}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-2 mt-4">
+                          {job.skills.map((skill) => (
+                            <Badge key={skill} variant="secondary">{skill}</Badge>
+                          ))}
+                          <span className="text-xs text-muted-foreground ml-2">
+                            Posted by {job.postedBy} (Class of {job.postedByClass})
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex lg:flex-col gap-2 lg:ml-4">
+                        <Button variant="navy" className="flex-1 lg:flex-none">
+                          Apply Now
+                        </Button>
+                        <Button variant="outline" size="icon">
+                          <ExternalLink className="w-4 h-4" />
                         </Button>
                       </div>
-
-                      <p className="text-sm text-muted-foreground mt-2 line-clamp-1">
-                        {job.description}
-                      </p>
-
-                      <div className="flex flex-wrap items-center gap-4 mt-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
-                          <span>{job.location}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Briefcase className="w-4 h-4" />
-                          <span>{job.type}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <DollarSign className="w-4 h-4" />
-                          <span>{job.salary}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          <span>{job.posted}</span>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-wrap items-center gap-2 mt-4">
-                        {job.skills.map((skill) => (
-                          <Badge key={skill} variant="secondary">{skill}</Badge>
-                        ))}
-                        <span className="text-xs text-muted-foreground ml-2">
-                          Posted by {job.postedBy} (Class of {job.postedByClass})
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex lg:flex-col gap-2 lg:ml-4">
-                      <Button variant="navy" className="flex-1 lg:flex-none">
-                        Apply Now
-                      </Button>
-                      <Button variant="outline" size="icon">
-                        <ExternalLink className="w-4 h-4" />
-                      </Button>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="text-center py-12 text-muted-foreground">
+                  <Briefcase className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                  <p>No job postings available at the moment.</p>
                 </div>
-              ))}
+              )}
             </div>
 
             {/* Load More */}
@@ -269,7 +205,7 @@ export default function JobsPage() {
                 Hire From Our Network
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Looking for talented professionals? Post your job openings and connect 
+                Looking for talented professionals? Post your job openings and connect
                 with qualified AFCS Yola alumni from around the world.
               </p>
               <Button variant="hero" size="lg">

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,7 @@ import { Badge } from "@/components/ui/badge";
 export default function ProfilePage() {
     const { user } = useAuth();
     const { toast } = useToast();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
@@ -144,12 +146,14 @@ export default function ProfilePage() {
             await setDoc(docRef, {
                 ...formData,
                 updatedAt: new Date().toISOString(),
+                isProfileComplete: true,
             }, { merge: true });
 
             toast({
                 title: "Success",
                 description: "Profile updated successfully.",
             });
+            navigate("/dashboard");
         } catch (error) {
             console.error("Error updating profile:", error);
             toast({
