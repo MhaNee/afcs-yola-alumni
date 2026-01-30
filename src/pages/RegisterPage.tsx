@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { 
-  GraduationCap, Mail, Lock, User, Calendar, 
-  ArrowRight, Eye, EyeOff, CheckCircle 
+import {
+  GraduationCap, Mail, Lock, User, Calendar,
+  ArrowRight, Eye, EyeOff, CheckCircle
 } from "lucide-react";
 import {
   Select,
@@ -14,28 +14,100 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { motion } from "framer-motion";
+import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth, db } from "@/lib/firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { useToast } from "@/hooks/use-toast";
 
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     password: "",
     graduationYear: "",
+    adminCode: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleGoogleSignIn = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      // Create user document if it doesn't exist
+      await setDoc(doc(db, "users", result.user.uid), {
+        fullName: result.user.displayName,
+        email: result.user.email,
+        photoURL: result.user.photoURL,
+        role: "alumni",
+        createdAt: new Date().toISOString(),
+      }, { merge: true });
+
+      toast({
+        title: "Welcome!",
+        description: "Successfully signed in with Google.",
+      });
+      navigate("/profile");
+    } catch (error: unknown) {
+      toast({
+        variant: "destructive",
+        title: "Error signing in",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+      });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle registration logic
+    setLoading(true);
+
+    // Check admin code
+    const role = formData.adminCode === "AFCS2025" ? "admin" : "alumni";
+
+    try {
+      const { user } = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      await updateProfile(user, {
+        displayName: formData.fullName,
+      });
+      await setDoc(doc(db, "users", user.uid), {
+        fullName: formData.fullName,
+        email: formData.email,
+        graduationYear: formData.graduationYear,
+        role: role,
+        createdAt: new Date().toISOString(),
+      });
+
+      toast({
+        title: "Account created!",
+        description: "Welcome to the AFCS Yola Alumni community.",
+      });
+      navigate("/profile");
+    } catch (error: unknown) {
+      toast({
+        variant: "destructive",
+        title: "Error creating account",
+        description: error instanceof Error ? error.message : "An unknown error occurred",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen flex">
       {/* Left Panel - Visual */}
-      <div className="hidden lg:flex flex-1 bg-gradient-hero items-center justify-center p-12">
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5 }}
+        className="hidden lg:flex flex-1 bg-gradient-hero items-center justify-center p-12"
+      >
         <div className="max-w-md">
           <div className="w-24 h-24 mb-8 rounded-2xl bg-gold/20 flex items-center justify-center">
             <GraduationCap className="w-14 h-14 text-gold" />
@@ -43,7 +115,7 @@ export default function RegisterPage() {
           <h2 className="text-3xl font-bold text-primary-foreground mb-6">
             Join Our Alumni Community
           </h2>
-          
+
           <div className="space-y-4">
             {[
               "Connect with 5,000+ alumni worldwide",
@@ -59,10 +131,15 @@ export default function RegisterPage() {
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Right Panel - Form */}
-      <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
+      <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="flex-1 flex items-center justify-center p-6 lg:p-12"
+      >
         <div className="w-full max-w-md">
           <Link to="/" className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 rounded-xl bg-gradient-hero flex items-center justify-center">
@@ -112,8 +189,8 @@ export default function RegisterPage() {
 
             <div className="space-y-2">
               <Label htmlFor="graduationYear">Graduation Year</Label>
-              <Select 
-                value={formData.graduationYear} 
+              <Select
+                value={formData.graduationYear}
                 onValueChange={(value) => setFormData({ ...formData, graduationYear: value })}
               >
                 <SelectTrigger className="h-12">
@@ -155,9 +232,25 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            <Button variant="navy" size="lg" className="w-full">
-              Create Account
-              <ArrowRight className="w-5 h-5 ml-2" />
+            <div className="space-y-2">
+              <Label htmlFor="adminCode">Admin Code (Optional)</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  id="adminCode"
+                  type="password"
+                  placeholder="Enter admin code"
+                  value={formData.adminCode}
+                  onChange={(e) => setFormData({ ...formData, adminCode: e.target.value })}
+                  className="pl-10 h-12"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">Admin use only.</p>
+            </div>
+
+            <Button variant="navy" size="lg" className="w-full" disabled={loading}>
+              {loading ? "Creating Account..." : "Create Account"}
+              {!loading && <ArrowRight className="w-5 h-5 ml-2" />}
             </Button>
           </form>
 
@@ -167,7 +260,7 @@ export default function RegisterPage() {
             <div className="flex-1 border-t border-border" />
           </div>
 
-          <Button variant="outline" size="lg" className="w-full">
+          <Button variant="outline" size="lg" className="w-full" onClick={handleGoogleSignIn} type="button">
             <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
@@ -203,7 +296,7 @@ export default function RegisterPage() {
             <a href="#" className="text-primary hover:underline">Privacy Policy</a>.
           </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -3,18 +3,39 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, GraduationCap, User } from "lucide-react";
 
-const navLinks = [
-  { name: "Home", path: "/" },
+import { useAuth } from "@/contexts/AuthContext";
+import { auth } from "@/lib/firebase";
+
+const navLinks: { name: string; path: string }[] = [
+  // Home link removed - users navigate via logo
+];
+
+const protectedLinks = [
   { name: "Directory", path: "/directory" },
   { name: "Events", path: "/events" },
   { name: "Jobs", path: "/jobs" },
-  { name: "Network", path: "/network" },
-  { name: "About", path: "/about" },
+  { name: "Chat", path: "/chat" },
+  { name: "Profile", path: "/profile" },
 ];
 
 export function Navbar() {
+  const { user, userData } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+
+  const allLinks = [...navLinks];
+  if (user) {
+    // Only show Dashboard/Admin link for admin users
+    const isAdmin = userData?.role === "admin";
+    if (isAdmin) {
+      allLinks.push({
+        name: "Admin",
+        path: "/dashboard"
+      });
+    }
+    // Show all other navigation links for authenticated users
+    allLinks.push(...protectedLinks);
+  }
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -37,15 +58,14 @@ export function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map((link) => (
+            {allLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.path}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isActive(link.path)
-                    ? "bg-primary text-primary-foreground"
-                    : "text-foreground/70 hover:text-foreground hover:bg-muted"
-                }`}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${isActive(link.path)
+                  ? "bg-primary text-primary-foreground"
+                  : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                  }`}
               >
                 {link.name}
               </Link>
@@ -54,15 +74,27 @@ export function Navbar() {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden lg:flex items-center gap-3">
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/login">Sign In</Link>
-            </Button>
-            <Button variant="navy" size="sm" asChild>
-              <Link to="/register" className="flex items-center gap-2">
-                <User className="w-4 h-4" />
-                Join Alumni
-              </Link>
-            </Button>
+            {user ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => auth.signOut()}
+              >
+                Sign Out
+              </Button>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/login">Sign In</Link>
+                </Button>
+                <Button variant="navy" size="sm" asChild>
+                  <Link to="/register" className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    Join Alumni
+                  </Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -79,35 +111,44 @@ export function Navbar() {
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="lg:hidden py-4 border-t border-border animate-fade-in">
             <div className="flex flex-col gap-2">
-              {navLinks.map((link) => (
+              {allLinks.map((link) => (
                 <Link
                   key={link.name}
                   to={link.path}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
-                    isActive(link.path)
-                      ? "bg-primary text-primary-foreground"
-                      : "text-foreground/70 hover:text-foreground hover:bg-muted"
-                  }`}
+                  className={`px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${isActive(link.path)
+                    ? "bg-primary text-primary-foreground"
+                    : "text-foreground/70 hover:text-foreground hover:bg-muted"
+                    }`}
                 >
                   {link.name}
                 </Link>
               ))}
               <div className="flex flex-col gap-2 pt-4 mt-2 border-t border-border">
-                <Button variant="outline" asChild>
-                  <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                    Sign In
-                  </Link>
-                </Button>
-                <Button variant="navy" asChild>
-                  <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>
-                    Join Alumni Network
-                  </Link>
-                </Button>
+                {user ? (
+                  <Button variant="outline" onClick={() => {
+                    auth.signOut();
+                    setIsMobileMenuOpen(false);
+                  }}>
+                    Sign Out
+                  </Button>
+                ) : (
+                  <>
+                    <Button variant="outline" asChild>
+                      <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                        Sign In
+                      </Link>
+                    </Button>
+                    <Button variant="navy" asChild>
+                      <Link to="/register" onClick={() => setIsMobileMenuOpen(false)}>
+                        Join Alumni Network
+                      </Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>

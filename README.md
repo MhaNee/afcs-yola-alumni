@@ -1,73 +1,71 @@
-# Welcome to your Lovable project
 
-## Project info
+# AFCS Yola Alumni Platform
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Welcome to the official **Air Force Comprehensive School (AFCS) Yola Alumni** platform. This application serves as a central hub for alumni to connect, network, share opportunities, and stay updated with school events.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- **Directory**: Browse and search for fellow alumni profiles. (Requires Login)
+- **Events**: Stay updated with upcoming reunions and school events. (Requires Login)
+- **Jobs**: Share and find job opportunities within the alumni network. (Requires Login)
+- **Network**: Connect with other alumni for professional networking. (Requires Login)
+- **Authentication**: secure login and registration using Firebase Auth.
+- **PWA Support**: Installable as a Progressive Web App on mobile and desktop.
 
-**Use Lovable**
+## Technologies Used
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- **Frontend**: React, TypeScript, Vite
+- **Styling**: Tailwind CSS, Shadcn/ui
+- **Backend / Auth**: Firebase (Authentication, Firestore)
+- **PWA**: vite-plugin-pwa
 
-Changes made via Lovable will be committed automatically to this repo.
+## Getting Started
 
-**Use your preferred IDE**
+### Prerequisites
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Node.js (v18 or later)
+- npm or yarn or bun
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Installation
 
-Follow these steps:
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd afcs-yola-alumni
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+3. Create a `.env` file in the root directory and add your Firebase configuration:
+   ```env
+   VITE_FIREBASE_API_KEY=your_api_key
+   VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+   VITE_FIREBASE_PROJECT_ID=your_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+   VITE_FIREBASE_APP_ID=your_app_id
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+### Building for Production
+
+To build the application for production:
+
+```bash
+npm run build
 ```
 
-**Edit a file directly in GitHub**
+## Contributing
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-**Use GitHub Codespaces**
+## License
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+This project is licensed under the MIT License.

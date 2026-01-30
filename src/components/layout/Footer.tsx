@@ -1,7 +1,14 @@
 import { Link } from "react-router-dom";
 import { GraduationCap, Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Footer() {
+  const { user } = useAuth();
+
+  // If user is authenticated, we might want to show a simplified footer or just generic info
+  // The user requested removing mock data from footer after auth. 
+  // Maybe hiding the "Quick Links" and "Resources" which are mostly placeholders is what's needed.
+
   return (
     <footer className="bg-navy-deep text-primary-foreground">
       <div className="container mx-auto px-4 py-12 lg:py-16">
@@ -18,7 +25,7 @@ export function Footer() {
               </div>
             </Link>
             <p className="text-sm text-primary-foreground/70 leading-relaxed">
-              Connecting graduates and former students of Air Force Comprehensive School Yola. 
+              Connecting graduates and former students of Air Force Comprehensive School Yola.
               Building a strong community of excellence.
             </p>
             <div className="flex items-center gap-3">
@@ -41,13 +48,18 @@ export function Footer() {
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-gold mb-4">Quick Links</h4>
             <ul className="space-y-3">
-              {["About Us", "Alumni Directory", "Events", "Job Board", "Donate"].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-sm text-primary-foreground/70 hover:text-gold transition-colors">
-                    {link}
-                  </a>
-                </li>
-              ))}
+              {!user ? (
+                <>
+                  <li><Link to="/about" className="text-sm text-primary-foreground/70 hover:text-gold transition-colors">About Us</Link></li>
+                  <li><Link to="/events" className="text-sm text-primary-foreground/70 hover:text-gold transition-colors">Events</Link></li>
+                </>
+              ) : (
+                <>
+                  <li><Link to="/directory" className="text-sm text-primary-foreground/70 hover:text-gold transition-colors">Directory</Link></li>
+                  <li><Link to="/jobs" className="text-sm text-primary-foreground/70 hover:text-gold transition-colors">Jobs</Link></li>
+                  <li><Link to="/chat" className="text-sm text-primary-foreground/70 hover:text-gold transition-colors">Chat</Link></li>
+                </>
+              )}
             </ul>
           </div>
 
@@ -55,13 +67,9 @@ export function Footer() {
           <div>
             <h4 className="text-sm font-semibold uppercase tracking-wider text-gold mb-4">Resources</h4>
             <ul className="space-y-3">
-              {["Mentorship Program", "Career Resources", "News & Updates", "Photo Gallery", "FAQs"].map((link) => (
-                <li key={link}>
-                  <a href="#" className="text-sm text-primary-foreground/70 hover:text-gold transition-colors">
-                    {link}
-                  </a>
-                </li>
-              ))}
+              <li><a href="#" className="text-sm text-primary-foreground/70 hover:text-gold transition-colors">News & Updates</a></li>
+              <li><a href="#" className="text-sm text-primary-foreground/70 hover:text-gold transition-colors">Photo Gallery</a></li>
+              <li><a href="#" className="text-sm text-primary-foreground/70 hover:text-gold transition-colors">FAQs</a></li>
             </ul>
           </div>
 
