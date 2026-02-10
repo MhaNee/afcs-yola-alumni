@@ -1,6 +1,8 @@
 import { Layout } from "@/components/layout/Layout";
 import { Card } from "@/components/ui/card";
-import { MessageSquare, Hash, Users } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { MessageSquare, Hash, Users, Send } from "lucide-react";
 import { useState } from "react";
 
 const chatRooms = [
@@ -10,6 +12,20 @@ const chatRooms = [
 
 export default function ChatPage() {
   const [activeRoom, setActiveRoom] = useState<string | null>(null);
+  const [message, setMessage] = useState("");
+
+  const handleSend = () => {
+    if (!message.trim()) return;
+    // TODO: send message logic
+    setMessage("");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
 
   return (
     <Layout>
@@ -46,24 +62,45 @@ export default function ChatPage() {
           </Card>
 
           {/* Chat Area */}
-          <Card className="col-span-1 md:col-span-2 p-0 shadow-sm flex flex-col items-center justify-center text-center bg-muted/30">
-            {activeRoom ? (
-              <div className="p-8">
-                <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                  {activeRoom === "general" ? <Hash className="w-8 h-8" /> : <Users className="w-8 h-8" />}
+          <Card className="col-span-1 md:col-span-2 p-0 shadow-sm flex flex-col bg-muted/30">
+            {/* Messages area */}
+            <div className="flex-1 flex items-center justify-center text-center">
+              {activeRoom ? (
+                <div className="p-8">
+                  <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    {activeRoom === "general" ? <Hash className="w-8 h-8" /> : <Users className="w-8 h-8" />}
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">
+                    {chatRooms.find((r) => r.id === activeRoom)?.name}
+                  </h3>
+                  <p className="text-muted-foreground">Be the first to send a message!</p>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">
-                  {chatRooms.find((r) => r.id === activeRoom)?.name}
-                </h3>
-                <p className="text-muted-foreground">Coming soon — real-time messaging will be available here.</p>
-              </div>
-            ) : (
-              <div className="p-8">
-                <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                  <MessageSquare className="w-8 h-8" />
+              ) : (
+                <div className="p-8">
+                  <div className="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <MessageSquare className="w-8 h-8" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">Select a chat room</h3>
+                  <p className="text-muted-foreground">Choose a room from the left to start chatting.</p>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Select a chat room</h3>
-                <p className="text-muted-foreground">Choose a room from the left to start chatting.</p>
+              )}
+            </div>
+
+            {/* Input field */}
+            {activeRoom && (
+              <div className="border-t p-4">
+                <div className="flex gap-2">
+                  <Input
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Type a message..."
+                    className="flex-1"
+                  />
+                  <Button onClick={handleSend} disabled={!message.trim()} size="icon" className="shrink-0">
+                    <Send className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
             )}
           </Card>
